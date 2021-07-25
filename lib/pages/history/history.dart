@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:my_architect/component/card_list.dart';
 
-class HomePage extends StatefulWidget {
+class History extends StatefulWidget {
+  // const Cartegory({ Key? key }) : super(key: key);
+
   @override
-  _HomePageState createState() => _HomePageState();
+  _HistoryState createState() => _HistoryState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

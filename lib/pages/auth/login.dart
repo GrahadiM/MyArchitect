@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 UserComponent.formUser(
                   'Email',
-                  hint: 'john@mail.com',
+                  hint: 'user@email.com',
                   type: TextInputType.emailAddress,
                   controller: emailController,
                   action: TextInputAction.next,

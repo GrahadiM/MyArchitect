@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:my_architect/component/card_list.dart';
 
-class HomePage extends StatefulWidget {
+class Profile extends StatefulWidget {
+  // const Cartegory({ Key? key }) : super(key: key);
+
   @override
-  _HomePageState createState() => _HomePageState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +21,9 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Lists(),
+      body: Center(
+        child: Text('Account'),
+      ),
     );
   }
 }

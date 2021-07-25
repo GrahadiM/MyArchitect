@@ -54,7 +54,8 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                           TextSpan(
-                            text: 'Temukan pekerja sesuai kebutuhan anda',
+                            text:
+                                'Temukan desain arsitek terbaik\n sesuai kebutuhan anda',
                           )
                         ]),
                         style: TextStyle(
