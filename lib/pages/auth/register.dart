@@ -7,7 +7,6 @@ import 'package:my_architect/component/const.dart';
 import 'package:my_architect/helper/auth_controller.dart';
 import 'package:my_architect/pages/auth/login.dart';
 import 'package:my_architect/pages/auth_page.dart';
-
 import 'auth_component/form_widget.dart';
 
 class RegisterPage extends StatefulWidget {

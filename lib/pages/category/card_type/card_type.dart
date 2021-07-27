@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:my_architect/component/card_list.dart';
 
 class Item {
   final String title;
@@ -138,8 +139,9 @@ class SecondPage extends StatelessWidget {
       appBar: AppBar(
         brightness: Brightness.dark,
         centerTitle: true,
-        title: Text('Fade Transition'),
+        title: Text('List Portofolio'),
       ),
+      body: Lists(),
     );
   }
 }

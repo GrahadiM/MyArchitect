@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/component/card_detail.dart';
+import 'package:my_architect/component/animation_fade.dart';
 
 class Item {
   final String title;
@@ -25,46 +25,6 @@ class Lists extends StatelessWidget {
       title: 'Desain Rumah Sederhana',
       categoryType: 'rumah tinggal',
       categoryModel: 'minimalis',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Premium Joglo House',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'skandinavia',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Room Coffee',
-      categoryType: 'caffe',
-      categoryModel: 'tropical',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'E-House',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'modern',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Kantor Xyz',
-      categoryType: 'kantor',
-      categoryModel: 'modern',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Premium Tropical House',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'tropical',
       author: 'Freelancer',
       image:
           'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
@@ -134,7 +94,7 @@ class Lists extends StatelessWidget {
                           onPressed: () => Navigator.push(
                             context,
                             FadeRoute2(
-                              SecondPage(),
+                              DetailHistory(),
                             ),
                           ),
                           child: Text('Click'),
@@ -152,7 +112,31 @@ class Lists extends StatelessWidget {
   }
 }
 
-class SecondPage extends StatelessWidget {
+class FadeRoute1 extends PageRouteBuilder {
+  final Widget page;
+
+  FadeRoute1(this.page)
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              FadeTransition(
+            opacity: animation,
+            child: page,
+          ),
+        );
+}
+
+class DetailHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +144,7 @@ class SecondPage extends StatelessWidget {
       appBar: AppBar(
         brightness: Brightness.dark,
         centerTitle: true,
-        title: Text('Detail Portofolio'),
+        title: Text('Detail History Pesanan'),
       ),
       body: CardDetail(),
     );
