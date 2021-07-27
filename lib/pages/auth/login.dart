@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +9,6 @@ import 'package:my_architect/helper/auth_controller.dart';
 import 'package:my_architect/pages/auth/register.dart';
 import 'package:my_architect/pages/auth_page.dart';
 import 'package:my_architect/pages/root.dart';
-
 import 'auth_component/form_widget.dart';
 
 class LoginPage extends StatefulWidget {

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:my_architect/pages/home.dart';
 import 'package:my_architect/pages/category/category.dart';
 import 'package:my_architect/pages/history/history.dart';
-import 'package:my_architect/pages/profile/profile.dart';
+import 'package:my_architect/pages/profile/menu_setting.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override
@@ -17,7 +17,7 @@ class BottomNavBarState extends State<BottomNavBar> {
     Center(child: HomePage()),
     Center(child: Category()),
     Center(child: History()),
-    Center(child: Profile()),
+    Center(child: SettingsPage()),
   ];
 
   @override
