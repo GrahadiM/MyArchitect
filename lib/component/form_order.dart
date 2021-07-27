@@ -2,10 +2,18 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_architect/api/api_order.dart';
+import 'package:my_architect/model/item_model.dart';
+import 'package:my_architect/model/order_model.dart';
 import 'package:my_architect/pages/auth/auth_component/form_widget.dart';
 import 'package:my_architect/component/animation_fade.dart';
+import 'package:my_architect/pages/home.dart';
+import 'package:my_architect/pages/root.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FormOrder extends StatefulWidget {
+  final ItemModel item;
+  const FormOrder(this.item);
   @override
   _FormOrderState createState() => _FormOrderState();
 }
@@ -15,12 +23,27 @@ class _FormOrderState extends State<FormOrder> {
   TextEditingController phoneController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
   TextEditingController cityController = new TextEditingController();
-  TextEditingController locationController = new TextEditingController();
+  TextEditingController addressController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  OrderRequestModel orderRequestModel;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  String token;
 
   bool hiddenPassword = true;
   var formKey = new GlobalKey<FormState>();
+  void initState() {
+    super.initState();
+    orderRequestModel = new OrderRequestModel();
+    _getToken();
+  }
+
+  Future<void> _getToken() async {
+    final SharedPreferences prefs = await _prefs;
+    token = prefs.getString('token');
+    print(token);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +98,7 @@ class _FormOrderState extends State<FormOrder> {
                       'Address',
                       hint: 'Kec.Pisangan Timur',
                       type: TextInputType.name,
-                      controller: locationController,
+                      controller: addressController,
                       action: TextInputAction.next,
                     ),
                   ],
@@ -107,7 +130,58 @@ class _FormOrderState extends State<FormOrder> {
                     padding: const EdgeInsets.only(left: 0, right: 20),
                     child: RaisedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        print(phoneController.text);
+                        print(cityController.text);
+                        print(addressController.text);
+                        print(widget.item.id);
+                        print(token);
+
+                        orderRequestModel.phone = phoneController.text;
+                        orderRequestModel.city = cityController.text;
+                        orderRequestModel.address = addressController.text;
+                        orderRequestModel.order_id = widget.item.id;
+                        orderRequestModel.token = token;
+
+                        APIOrder apiService = new APIOrder();
+                        apiService.order(orderRequestModel).then((value) async {
+                          if (value.success) {
+                            EasyLoading.dismiss();
+                            Fluttertoast.showToast(
+                              msg: "Berhasil Order",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.SNACKBAR,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.blue,
+                              fontSize: 16.0,
+                            );
+
+                            // log(loginController.authStorage
+                            //     .read('isLogin')
+                            //     .toString());
+
+                            await Future.delayed(
+                              Duration(milliseconds: 300),
+                              () => Get.offAll(Root()),
+                            );
+                          } else {
+                            EasyLoading.dismiss();
+                            Fluttertoast.showToast(
+                              msg: "Gagal Order",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.SNACKBAR,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              fontSize: 16.0,
+                            );
+                          }
+                          // if (value != null) {
+                          //   setState(() {
+                          //     // isApiCallProcess = false;
+                          //   });
+                          // }
+                        });
+                        // nameController;
+                        // Navigator.pop(context);
                       },
                       color: Colors.blue,
                       padding: EdgeInsets.symmetric(horizontal: 50),

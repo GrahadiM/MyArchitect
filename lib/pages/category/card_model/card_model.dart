@@ -1,45 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my_architect/component/card_list.dart';
-
-class Item {
-  final String title;
-
-  Item({
-    this.title,
-  });
-}
+import 'package:my_architect/model/category_all_model.dart';
 
 class CategoryModel extends StatelessWidget {
-  final List<Item> _data = [
-    Item(
-      title: 'minimalis',
-    ),
-    Item(
-      title: 'klasik',
-    ),
-    Item(
-      title: 'skandinavia',
-    ),
-    Item(
-      title: 'industril',
-    ),
-    Item(
-      title: 'tradisional',
-    ),
-    Item(
-      title: 'modern',
-    ),
-    Item(
-      title: 'asian',
-    ),
-    Item(
-      title: 'kontemporer',
-    ),
-    Item(
-      title: 'tropical',
-    ),
-  ];
+  final List<CategoryAllModel> _data;
+  CategoryModel(this._data);
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +13,14 @@ class CategoryModel extends StatelessWidget {
       padding: EdgeInsets.all(6),
       itemCount: _data.length,
       itemBuilder: (BuildContext context, int index) {
-        Item item = _data[index];
+        CategoryAllModel item = _data[index];
         return GestureDetector(
-          onTap: () => Navigator.push(
-            context,
-            FadeRoute2(
-              SecondPage(),
-            ),
-          ),
+          // onTap: () => Navigator.push(
+          //   context,
+          //   FadeRoute2(
+          //     SecondPage(),
+          //   ),
+          // ),
           child: Card(
             elevation: 3,
             child: Row(
@@ -129,17 +95,17 @@ class FadeRoute2 extends PageRouteBuilder {
         );
 }
 
-class SecondPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        centerTitle: true,
-        title: Text('List Portofolio'),
-      ),
-      body: Lists(),
-    );
-  }
-}
+// class SecondPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         brightness: Brightness.dark,
+//         centerTitle: true,
+//         title: Text('List Portofolio'),
+//       ),
+//       body: Lists(),
+//     );
+//   }
+// }

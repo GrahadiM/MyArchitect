@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:my_architect/api/api_service.dart';
 import 'package:my_architect/component/back_button.dart';
 import 'package:my_architect/component/const.dart';
 import 'package:my_architect/helper/auth_controller.dart';
+import 'package:my_architect/model/login_model.dart';
 import 'package:my_architect/pages/auth/register.dart';
 import 'package:my_architect/pages/auth_page.dart';
 import 'package:my_architect/pages/root.dart';
 import 'auth_component/form_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,9 +24,32 @@ class _LoginPageState extends State<LoginPage> {
   AuthController loginController = Get.find();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
-
+  LoginRequestModel loginRequestModel;
   bool hiddenPassword = true;
   var formKey = new GlobalKey<FormState>();
+
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Future<void> _setToken(token, userId) async {
+    final SharedPreferences prefs = await _prefs;
+    final String _token = prefs.getString('token');
+    final int UserId = prefs.getInt('userId');
+
+    setState(() {
+      prefs.setString("token", token).then((bool success) {
+        return _token;
+      });
+
+      prefs.setInt("userId", userId).then((bool success) {
+        return userId;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loginRequestModel = new LoginRequestModel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +192,8 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState.validate()) {
+                  print("harus kesnin");
+                  // print(loginRequestModel.toJson());
                   await EasyLoading.show(
                     status: 'loading...',
                     maskType: EasyLoadingMaskType.black,
@@ -172,23 +201,69 @@ class _LoginPageState extends State<LoginPage> {
 
                   loginController.login(
                       emailController.text, passwordController.text);
+                  print(emailController.text);
+                  print(passwordController.text);
 
-                  EasyLoading.dismiss();
-                  Fluttertoast.showToast(
-                    msg: "Berhasil Login",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.SNACKBAR,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.blue,
-                    fontSize: 16.0,
-                  );
+                  loginRequestModel.email = emailController.text;
+                  loginRequestModel.password = passwordController.text;
+                  // loginRequestModel.nama = "";
 
-                  log(loginController.authStorage.read('isLogin').toString());
+                  APIService apiService = new APIService();
+                  apiService.login(loginRequestModel).then((value) async {
+                    if (value.success) {
+                      _setToken(value.token, value.userId);
+                      EasyLoading.dismiss();
+                      Fluttertoast.showToast(
+                        msg: "Berhasil Login",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.SNACKBAR,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.blue,
+                        fontSize: 16.0,
+                      );
 
-                  await Future.delayed(
-                    Duration(milliseconds: 300),
-                    () => Get.offAll(Root()),
-                  );
+                      log(loginController.authStorage
+                          .read('isLogin')
+                          .toString());
+
+                      await Future.delayed(
+                        Duration(milliseconds: 300),
+                        () => Get.offAll(Root()),
+                      );
+                    } else {
+                      EasyLoading.dismiss();
+                      Fluttertoast.showToast(
+                        msg: "Gagal Login",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.SNACKBAR,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        fontSize: 16.0,
+                      );
+                    }
+                    // if (value != null) {
+                    //   setState(() {
+                    //     // isApiCallProcess = false;
+                    //   });
+                    // }
+                  });
+
+                  // EasyLoading.dismiss();
+                  // Fluttertoast.showToast(
+                  //   msg: "Berhasil Login",
+                  //   toastLength: Toast.LENGTH_SHORT,
+                  //   gravity: ToastGravity.SNACKBAR,
+                  //   timeInSecForIosWeb: 1,
+                  //   backgroundColor: Colors.blue,
+                  //   fontSize: 16.0,
+                  // );
+
+                  // log(loginController.authStorage.read('isLogin').toString());
+
+                  // await Future.delayed(
+                  //   Duration(milliseconds: 300),
+                  //   () => Get.offAll(Root()),
+                  // );
                 } else {
                   Fluttertoast.showToast(
                     msg: 'Kolom tidak boleh kosong',

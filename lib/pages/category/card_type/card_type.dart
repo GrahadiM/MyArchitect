@@ -1,47 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my_architect/component/card_list.dart';
-
-class Item {
-  final String title;
-  final String button;
-
-  Item({
-    this.title,
-    this.button,
-  });
-}
+import 'package:my_architect/model/category_all_model.dart';
 
 class CategoryType extends StatelessWidget {
-  final List<Item> _data = [
-    Item(
-      title: 'rumah tinggal',
-    ),
-    Item(
-      title: 'villa',
-    ),
-    Item(
-      title: 'cafe',
-    ),
-    Item(
-      title: 'kantor',
-    ),
-    Item(
-      title: 'apartemen',
-    ),
-    Item(
-      title: 'restoran',
-    ),
-    Item(
-      title: 'ruang serba guna',
-    ),
-    Item(
-      title: 'lapangan futsal',
-    ),
-    Item(
-      title: 'unfinished',
-    ),
-  ];
+  final List<CategoryAllModel> _data;
+  CategoryType(this._data);
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +13,14 @@ class CategoryType extends StatelessWidget {
       padding: EdgeInsets.all(6),
       itemCount: _data.length,
       itemBuilder: (BuildContext context, int index) {
-        Item item = _data[index];
+        CategoryAllModel item = _data[index];
         return GestureDetector(
-          onTap: () => Navigator.push(
-            context,
-            FadeRoute2(
-              SecondPage(),
-            ),
-          ),
+          // onTap: () => Navigator.push(
+          //   context,
+          //   FadeRoute2(
+          //     SecondPage(),
+          //   ),
+          // ),
           child: Card(
             elevation: 3,
             child: Row(
@@ -131,17 +95,17 @@ class FadeRoute2 extends PageRouteBuilder {
         );
 }
 
-class SecondPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        centerTitle: true,
-        title: Text('List Portofolio'),
-      ),
-      body: Lists(),
-    );
-  }
-}
+// class SecondPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         brightness: Brightness.dark,
+//         centerTitle: true,
+//         title: Text('List Portofolio'),
+//       ),
+//       body: Lists(),
+//     );
+//   }
+// }

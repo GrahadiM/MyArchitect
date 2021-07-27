@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:my_architect/api/api_register.dart';
+import 'package:my_architect/api/api_service.dart';
 import 'package:my_architect/component/back_button.dart';
 import 'package:my_architect/component/const.dart';
 import 'package:my_architect/helper/auth_controller.dart';
+import 'package:my_architect/model/login_model.dart';
 import 'package:my_architect/pages/auth/login.dart';
 import 'package:my_architect/pages/auth_page.dart';
 import 'auth_component/form_widget.dart';
@@ -21,9 +24,17 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
 
+  LoginRequestModel registerRequestModel;
+
   bool hiddenPassword = true;
   bool hiddenPasswordConfirm = true;
   var formKey = new GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    registerRequestModel = new LoginRequestModel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,30 +209,67 @@ class _RegisterPageState extends State<RegisterPage> {
 
   tapRegister() async {
     if (formKey.currentState.validate()) {
-      await EasyLoading.show(
-        status: 'loading...',
-        maskType: EasyLoadingMaskType.black,
-      );
+      registerRequestModel.name = nameController.text;
+      registerRequestModel.email = emailController.text;
+      registerRequestModel.password = passwordController.text;
 
-      EasyLoading.dismiss();
+      APIRegister apiRegister = new APIRegister();
+      apiRegister.register(registerRequestModel).then((value) async {
+        print(value);
+        if (value.success) {
+          EasyLoading.dismiss();
+          Fluttertoast.showToast(
+            msg: "Berhasil Register",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.blue,
+            fontSize: 16.0,
+          );
 
-      Fluttertoast.showToast(
-        msg: "Berhasil Login",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue,
-        fontSize: 16.0,
-      );
+          // log(loginController.authStorage.read('isLogin').toString());
 
-      await Future.delayed(
-        Duration(milliseconds: 300),
-        () => Get.to(
-          LoginPage(),
-          transition: Transition.downToUp,
-          duration: Duration(milliseconds: 500),
-        ),
-      );
+          await Future.delayed(
+            Duration(milliseconds: 300),
+            () => Get.offAll(LoginPage()),
+          );
+        } else {
+          EasyLoading.dismiss();
+          Fluttertoast.showToast(
+            msg: "Gagal Login",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            fontSize: 16.0,
+          );
+        }
+        //
+      });
+      // await EasyLoading.show(
+      //   status: 'loading...',
+      //   maskType: EasyLoadingMaskType.black,
+      // );
+
+      // EasyLoading.dismiss();
+
+      // Fluttertoast.showToast(
+      //   msg: "Berhasil Login",
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.SNACKBAR,
+      //   timeInSecForIosWeb: 1,
+      //   backgroundColor: Colors.blue,
+      //   fontSize: 16.0,
+      // );
+
+      // await Future.delayed(
+      //   Duration(milliseconds: 300),
+      //   () => Get.to(
+      //     LoginPage(),
+      //     transition: Transition.downToUp,
+      //     duration: Duration(milliseconds: 500),
+      //   ),
+      // );
     } else {
       Fluttertoast.showToast(
         msg: 'Kolom tidak boleh kosong',

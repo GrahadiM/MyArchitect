@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:my_architect/api/api_project.dart';
 import 'package:my_architect/component/card_list.dart';
+import 'package:my_architect/model/item_model.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,7 +15,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<ItemModel> list = [];
+
   @override
+  void initState() {
+    super.initState();
+    initialData();
+  }
+
+  void initialData() async {
+    Uri url = Uri.parse("http://192.168.43.183/flutter/public/api/portofolio");
+    final response = await http.get(url);
+    var jsonData = json.decode(response.body);
+    print("jsonData");
+    print(jsonData["success"]);
+
+    if (jsonData["success"]) {
+      for (var u in jsonData["data"]["portofolio"]["data"]) {
+        ItemModel project = ItemModel.fromJson(u);
+        list.add(project);
+      }
+    }
+    print("list.length");
+    print(list.length);
+
+    setState(() {});
+  }
+  // APIProject apiService = new APIProject();
+  // apiService.ambilData();
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -24,7 +57,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Lists(),
+      body: Lists(list),
     );
   }
 }

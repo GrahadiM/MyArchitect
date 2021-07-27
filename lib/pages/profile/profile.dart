@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_architect/component/animation_fade.dart';
+import 'package:my_architect/model/user_model.dart';
 import 'package:my_architect/pages/profile/edit_profile.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key key}) : super(key: key);
@@ -11,13 +15,49 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  int userId;
+  UserModel dataUser;
+
   @override
+  void initState() {
+    super.initState();
+    _getUserId();
+  }
+
+  Future<void> _getUserId() async {
+    final SharedPreferences prefs = await _prefs;
+    userId = prefs.getInt('userId');
+    print(userId);
+    initialData();
+  }
+
+  void initialData() async {
+    Uri url = Uri.parse(
+        "http://192.168.43.183/flutter/public/api/akun/show?userId="
+                .toString() +
+            userId.toString());
+    print("http://192.168.43.183/flutter/public/api/akun/show?userId="
+            .toString() +
+        userId.toString());
+    final response = await http.get(url);
+    var jsonData = json.decode(response.body);
+    print("jsonData");
+    print(jsonData);
+
+    dataUser = UserModel.fromJson(jsonData["data"]["auth"]);
+
+    setState(() {});
+  }
+
   Widget build(BuildContext context) {
-    return ProfileSevenPage();
+    return ProfileSevenPage(dataUser);
   }
 }
 
 class ProfileSevenPage extends StatelessWidget {
+  UserModel dataUserModel;
+  ProfileSevenPage(this.dataUserModel);
   static final String path = "lib/src/pages/profile/profile7.dart";
 
   @override
@@ -94,7 +134,7 @@ class ProfileSevenPage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(15),
                       ),
-                      UserInfo()
+                      UserInfo(dataUserModel)
                     ],
                   )
                 ],
@@ -106,6 +146,8 @@ class ProfileSevenPage extends StatelessWidget {
 }
 
 class UserInfo extends StatelessWidget {
+  UserModel userDataModel;
+  UserInfo(this.userDataModel);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -141,25 +183,26 @@ class UserInfo extends StatelessWidget {
                             EdgeInsets.symmetric(horizontal: 12, vertical: 15),
                         leading: Icon(Icons.my_location),
                         title: Text("Location"),
-                        subtitle: Text("Jakarta Timur" "\n Kec.Pisangan Timur"),
+                        subtitle: Text(userDataModel.city.toString() +
+                            "\n" +
+                            userDataModel.address.toString()),
                       ),
                       ListTile(
                         leading: Icon(Icons.email),
                         title: Text("Email"),
-                        subtitle: Text("user@test.com"),
+                        subtitle: Text(userDataModel.email.toString()),
                       ),
                       ListTile(
                         leading: Icon(Icons.phone),
                         title: Text("Phone"),
-                        subtitle: Text("085767113554"),
+                        subtitle: Text(userDataModel.phone.toString()),
                       ),
                       ListTile(
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 15),
                         leading: Icon(Icons.person),
                         title: Text("About Me"),
-                        subtitle: Text(
-                            "This is a about me link and you can khow about me in this section."),
+                        subtitle: Text(userDataModel.desc.toString()),
                       ),
                     ],
                   ))

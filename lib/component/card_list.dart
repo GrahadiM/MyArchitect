@@ -2,74 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/component/card_detail.dart';
+import 'package:my_architect/model/item_model.dart';
 
 class Item {
+  final String id;
   final String title;
   final String categoryType;
   final String categoryModel;
   final String author;
   final String image;
 
-  Item({
+  Item(
+    this.id,
     this.title,
     this.categoryType,
     this.categoryModel,
     this.author,
     this.image,
-  });
+  );
 }
 
 class Lists extends StatelessWidget {
-  final List<Item> _data = [
-    Item(
-      title: 'Desain Rumah Sederhana',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'minimalis',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Premium Joglo House',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'skandinavia',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Room Coffee',
-      categoryType: 'caffe',
-      categoryModel: 'tropical',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'E-House',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'modern',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Kantor Xyz',
-      categoryType: 'kantor',
-      categoryModel: 'modern',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-    Item(
-      title: 'Premium Tropical House',
-      categoryType: 'rumah tinggal',
-      categoryModel: 'tropical',
-      author: 'Freelancer',
-      image:
-          'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-    ),
-  ];
+  List<ItemModel> _data = [];
+  List<ItemModel> item_model = [];
+  Lists(this._data);
+
+  @override
+  void initState() {
+    initialData();
+  }
+
+  void initialData() async {
+    print("item_model.length");
+    for (var item in item_model) {
+      Item calon_item = Item(item.id, item.title, item.categoryType,
+          item.categoryModel, item.author, item.image);
+    }
+    print(item_model.length);
+    //
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +48,7 @@ class Lists extends StatelessWidget {
       padding: EdgeInsets.all(6),
       itemCount: _data.length,
       itemBuilder: (BuildContext context, int index) {
-        Item item = _data[index];
+        ItemModel item = _data[index];
         return Card(
           elevation: 3,
           child: Row(
@@ -134,7 +105,7 @@ class Lists extends StatelessWidget {
                           onPressed: () => Navigator.push(
                             context,
                             FadeRoute2(
-                              SecondPage(),
+                              SecondPage(item),
                             ),
                           ),
                           child: Text('Click'),
@@ -153,6 +124,8 @@ class Lists extends StatelessWidget {
 }
 
 class SecondPage extends StatelessWidget {
+  ItemModel _data;
+  SecondPage(this._data);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,7 +135,7 @@ class SecondPage extends StatelessWidget {
         centerTitle: true,
         title: Text('Detail Portofolio'),
       ),
-      body: CardDetail(),
+      body: CardDetail(_data),
     );
   }
 }

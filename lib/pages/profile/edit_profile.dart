@@ -1,9 +1,17 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_architect/api/api_edit_profil.dart';
+import 'package:my_architect/model/edit_profil_model.dart';
+import 'package:my_architect/model/user_model.dart';
 import 'package:my_architect/pages/auth/auth_component/form_widget.dart';
 import 'package:my_architect/component/animation_fade.dart';
+import 'package:my_architect/pages/profile/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileSettingsPage extends StatelessWidget {
   static final String path = "lib/src/pages/settings/profilesettings.dart";
@@ -27,13 +35,55 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController phoneController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
   TextEditingController cityController = new TextEditingController();
-  TextEditingController locationController = new TextEditingController();
+  TextEditingController addressController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  EditProfilRequestModel editProfilRequestModel;
+
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  int userId;
+  UserModel dataUser;
 
   bool hiddenPassword = true;
   var formKey = new GlobalKey<FormState>();
+  void initState() {
+    super.initState();
+    editProfilRequestModel = new EditProfilRequestModel();
+    _getUserId();
+  }
+
   @override
+  Future<void> _getUserId() async {
+    final SharedPreferences prefs = await _prefs;
+    userId = prefs.getInt('userId');
+    print(userId);
+    setState(() {});
+    initialData();
+  }
+
+  void initialData() async {
+    Uri url = Uri.parse(
+        "http://192.168.43.183/flutter/public/api/akun/show?userId="
+                .toString() +
+            userId.toString());
+    final response = await http.get(url);
+    var jsonData = json.decode(response.body);
+    print("jsonData");
+    print(jsonData);
+    print(jsonData["data"]);
+
+    dataUser = UserModel.fromJson(jsonData["data"]["auth"]);
+    nameController.text = dataUser.name;
+    phoneController.text = dataUser.phone;
+    descriptionController.text = dataUser.desc;
+    cityController.text = dataUser.city;
+    addressController.text = dataUser.address;
+    emailController.text = dataUser.email;
+
+    setState(() {});
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -156,7 +206,7 @@ class _EditProfileState extends State<EditProfile> {
                       'Address',
                       hint: 'Kec.Pisangan Timur',
                       type: TextInputType.name,
-                      controller: locationController,
+                      controller: addressController,
                       action: TextInputAction.next,
                     ),
                     UserComponent.formUser(
@@ -213,7 +263,69 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      print(nameController.text);
+                      print(phoneController.text);
+                      print(descriptionController.text);
+                      print(cityController.text);
+                      print(addressController.text);
+                      print(emailController.text);
+                      print(passwordController.text);
+
+                      // print(widget.item.id);
+                      editProfilRequestModel.username = nameController.text;
+                      editProfilRequestModel.phone = phoneController.text;
+                      editProfilRequestModel.description =
+                          descriptionController.text;
+                      editProfilRequestModel.city = cityController.text;
+                      editProfilRequestModel.address = addressController.text;
+                      editProfilRequestModel.email = emailController.text;
+                      editProfilRequestModel.password = passwordController.text;
+
+                      // editProfilRequestModel.order_id = widget.item;
+
+                      APIEditProfil apiService = new APIEditProfil();
+                      apiService
+                          .edit(editProfilRequestModel)
+                          .then((value) async {
+                        if (value.success) {
+                          EasyLoading.dismiss();
+                          Fluttertoast.showToast(
+                            msg: "Berhasil Edit Profil",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.SNACKBAR,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue,
+                            fontSize: 16.0,
+                          );
+
+                          // log(loginController.authStorage
+                          //     .read('isLogin')
+                          //     .toString());
+
+                          await Future.delayed(
+                            Duration(milliseconds: 300),
+                            () => Get.offAll(Profile()),
+                          );
+                        } else {
+                          EasyLoading.dismiss();
+                          Fluttertoast.showToast(
+                            msg: "Gagal Edit Profil",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.SNACKBAR,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            fontSize: 16.0,
+                          );
+                        }
+                        // if (value != null) {
+                        //   setState(() {
+                        //     // isApiCallProcess = false;
+                        //   });
+                        // }
+                      });
+                      // nameController;
+                      // Navigator.pop(context);
+                      // Navigator.pop(context);
                     },
                     color: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 50),
