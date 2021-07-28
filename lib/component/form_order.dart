@@ -1,15 +1,20 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_architect/api/api_order.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'package:my_architect/model/order_model.dart';
+import 'package:my_architect/model/price_model.dart';
 import 'package:my_architect/pages/auth/auth_component/form_widget.dart';
 import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/pages/home.dart';
 import 'package:my_architect/pages/root.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class FormOrder extends StatefulWidget {
   final ItemModel item;
@@ -29,6 +34,9 @@ class _FormOrderState extends State<FormOrder> {
   OrderRequestModel orderRequestModel;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   String token;
+  List list_price = [];
+  int _dropdownValue;
+  // Widget.canUpdate(oldWidget, newWidget)
 
   bool hiddenPassword = true;
   var formKey = new GlobalKey<FormState>();
@@ -36,12 +44,34 @@ class _FormOrderState extends State<FormOrder> {
     super.initState();
     orderRequestModel = new OrderRequestModel();
     _getToken();
+    _getPrice(widget.item);
   }
 
   Future<void> _getToken() async {
     final SharedPreferences prefs = await _prefs;
     token = prefs.getString('token');
     print(token);
+  }
+
+  void _getPrice(ItemModel item) async {
+    String BaseUrl = AppSetting.apirul;
+    Uri url = Uri.parse(BaseUrl + "/price?user_id" + item.user_id);
+    final response = await http.get(url);
+    var jsonData = json.decode(response.body);
+    print("jsonData");
+    print(jsonData["data"]);
+
+    if (jsonData["success"]) {
+      for (var u in jsonData["data"]["price"]) {
+        PriceModel project = PriceModel.fromJson(u);
+        print(project);
+        list_price.add(project);
+      }
+    }
+    print("list_price.length");
+    print(list_price.length);
+
+    setState(() {});
   }
 
   @override
@@ -101,6 +131,33 @@ class _FormOrderState extends State<FormOrder> {
                       controller: addressController,
                       action: TextInputAction.next,
                     ),
+                    new InputDecorator(
+                      decoration: InputDecoration(
+                        filled: false,
+                        hintText: 'Choose Country',
+                        prefixIcon: Icon(Icons.location_on),
+                        labelText: 'Pilih Harga',
+                      ),
+                      child: DropdownButton(
+                        value: _dropdownValue,
+                        isDense: true,
+                        onChanged: (list_price) {
+                          print('value change');
+                          print(list_price);
+                          setState(() {
+                            _dropdownValue = list_price;
+                          });
+                        },
+                        items: list_price.map((value) {
+                          return DropdownMenuItem(
+                            value: value.id,
+                            child: Text(value.name.toString() +
+                                " - " +
+                                value.price.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -121,8 +178,8 @@ class _FormOrderState extends State<FormOrder> {
                       },
                       child: Text("CANCEL",
                           style: TextStyle(
-                              fontSize: 14,
-                              letterSpacing: 2.2,
+                              fontSize: 10,
+                              letterSpacing: 1.1,
                               color: Colors.black)),
                     ),
                   ),
@@ -134,12 +191,14 @@ class _FormOrderState extends State<FormOrder> {
                         print(cityController.text);
                         print(addressController.text);
                         print(widget.item.id);
+
                         print(token);
 
                         orderRequestModel.phone = phoneController.text;
                         orderRequestModel.city = cityController.text;
                         orderRequestModel.address = addressController.text;
                         orderRequestModel.order_id = widget.item.id;
+                        orderRequestModel.price_id = _dropdownValue.toString();
                         orderRequestModel.token = token;
 
                         APIOrder apiService = new APIOrder();

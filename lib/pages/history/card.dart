@@ -20,10 +20,10 @@ class Lists extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Container(
-                height: 125,
-                width: 110,
+                height: 90,
+                width: 80,
                 padding:
-                    EdgeInsets.only(left: 0, top: 10, bottom: 70, right: 20),
+                    EdgeInsets.only(left: 0, top: 10, bottom: 70, right: 5),
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(item.image),
@@ -42,7 +42,7 @@ class Lists extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.deepOrange,
                           fontWeight: FontWeight.w700,
-                          fontSize: 17),
+                          fontSize: 14),
                     ),
                     SizedBox(
                       height: 10,

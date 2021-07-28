@@ -1,9 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/component/card_list.dart';
 import 'package:my_architect/model/category_all_model.dart';
+import 'package:my_architect/model/item_model.dart';
+import 'package:my_architect/pages/second_project.dart';
+import 'package:http/http.dart' as http;
 
 class CategoryType extends StatelessWidget {
+  String BaseUrl = AppSetting.apirul;
+  List<ItemModel> list = [];
   final List<CategoryAllModel> _data;
   CategoryType(this._data);
 
@@ -15,6 +23,35 @@ class CategoryType extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         CategoryAllModel item = _data[index];
         return GestureDetector(
+          onTap: () async {
+            list = [];
+            print(item.id);
+            Uri url = Uri.parse(BaseUrl +
+                "/portofolio?category=type&categori_id=" +
+                item.id.toString());
+            print(BaseUrl +
+                "/portofolio?category=type&categori_id=" +
+                item.id.toString());
+            final response = await http.get(url);
+            var jsonData = json.decode(response.body);
+            print("jsonData");
+            print(jsonData["success"]);
+
+            if (jsonData["success"]) {
+              for (var u in jsonData["data"]["portofolio"]["data"]) {
+                ItemModel project = ItemModel.fromJson(u);
+                list.add(project);
+              }
+            }
+
+            Navigator.push(
+              context,
+              FadeRoute2(
+                SecondPageProject(list),
+              ),
+            );
+          },
+
           // onTap: () => Navigator.push(
           //   context,
           //   FadeRoute2(

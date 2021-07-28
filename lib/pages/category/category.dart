@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/category_all_model.dart';
 import 'package:my_architect/pages/category/card_type/card_type.dart';
 import 'package:my_architect/pages/category/card_model/card_model.dart';
@@ -14,12 +15,12 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
+  String BaseUrl = AppSetting.apirul;
   List<CategoryAllModel> list_categori_model = [];
   List<CategoryAllModel> list_categori_type = [];
   @override
   void initialDataModel() async {
-    Uri url =
-        Uri.parse("http://192.168.43.183/flutter/public/api/kategori?q=model");
+    Uri url = Uri.parse(BaseUrl + "/kategori?q=model");
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
     print("jsonData");
@@ -38,8 +39,7 @@ class _CategoryState extends State<Category> {
   }
 
   void initialDataType() async {
-    Uri url =
-        Uri.parse("http://192.168.43.183/flutter/public/api/kategori?q=type");
+    Uri url = Uri.parse(BaseUrl + "/kategori?q=type");
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
     print("jsonData");

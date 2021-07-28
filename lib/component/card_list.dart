@@ -83,33 +83,49 @@ class Lists extends StatelessWidget {
                     ),
                     Text(
                       item.categoryType.toUpperCase(),
-                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                      style: TextStyle(fontSize: 5, color: Colors.black87),
                     ),
                     Text(
                       item.categoryModel.toUpperCase(),
-                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                      style: TextStyle(fontSize: 5, color: Colors.black87),
                     ),
                     // SizedBox(
                     //   height: 10,
                     // ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        Text(
-                          item.author,
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        SizedBox(
-                          width: 100,
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.push(
-                            context,
-                            FadeRoute2(
-                              SecondPage(item),
-                            ),
+                        Column(children: [
+                          Text(
+                            item.author,
+                            style: TextStyle(fontSize: 8),
                           ),
-                          child: Text('Click'),
+                        ]),
+                        Column(
+                          children: [
+                            SizedBox(
+                              width: 60,
+                            ),
+                          ],
                         ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Align(
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  FadeRoute2(
+                                    SecondPage(item),
+                                  ),
+                                ),
+                                child: Text('Click'),
+                              ),
+                              alignment: Alignment.center,
+                            )
+                          ],
+                        )
                       ],
                     ),
                   ],

@@ -1,11 +1,13 @@
 import 'package:http/http.dart' as http;
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'dart:convert';
 import '../model/item_model.dart';
 
 class APIProject {
+  String BaseUrl = AppSetting.apirul;
   Future<List<ItemModel>> ambilData() async {
-    Uri url = Uri.parse("http://192.168.43.183/flutter/public/api/login");
+    Uri url = Uri.parse(BaseUrl + "/login");
     print(url);
     List<ItemModel> projects = [];
 

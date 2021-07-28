@@ -211,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                   APIService apiService = new APIService();
                   apiService.login(loginRequestModel).then((value) async {
                     if (value.success) {
-                      _setToken(value.token, value.userId);
+                      _setToken(value.token, int.parse(value.userId));
                       EasyLoading.dismiss();
                       Fluttertoast.showToast(
                         msg: "Berhasil Login",

@@ -112,14 +112,14 @@ class _CardDetailState extends State<CardDetail> {
                               Text(
                                 "Author : ",
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 14,
                                   color: Colors.black87,
                                 ),
                               ),
                               Text(
                                 item.author,
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 14,
                                   color: Colors.black87,
                                 ),
                               ),

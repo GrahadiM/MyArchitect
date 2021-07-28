@@ -1,13 +1,15 @@
 import 'package:http/http.dart' as http;
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/edit_profil_model.dart';
 import 'package:my_architect/model/order_model.dart';
 import 'dart:convert';
 import '../model/login_model.dart';
 
 class APIEditProfil {
+  String BaseUrl = AppSetting.apirul;
   Future<EditProfilResponseModel> edit(
       EditProfilRequestModel requestModel) async {
-    Uri url = Uri.parse("http://192.168.43.183/flutter/public/api/akun/edit");
+    Uri url = Uri.parse(BaseUrl + "/akun/edit");
     print(url);
 
     final response = await http.post(url, body: requestModel.toJson());

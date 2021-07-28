@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'package:my_architect/pages/history/card.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +17,7 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
+  String BaseUrl = AppSetting.apirul;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   int userId;
 
@@ -24,13 +26,11 @@ class _HistoryState extends State<History> {
     userId = prefs.getInt('userId');
     print(userId);
 
-    Uri url = Uri.parse(
-        "http://192.168.43.183/flutter/public/api/history?id=".toString() +
-            userId.toString());
+    Uri url =
+        Uri.parse(BaseUrl + "/history?id=".toString() + userId.toString());
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
-    print("http://192.168.43.183/flutter/public/api/history?id=".toString() +
-        userId.toString());
+    print(BaseUrl + "/history?id=".toString() + userId.toString());
     print("jsonData");
     print(jsonData);
 

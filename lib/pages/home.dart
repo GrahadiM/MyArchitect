@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:my_architect/api/api_project.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/component/card_list.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +25,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initialData() async {
-    Uri url = Uri.parse("http://192.168.43.183/flutter/public/api/portofolio");
+    String BaseUrl = AppSetting.apirul;
+    Uri url = Uri.parse(BaseUrl + "/portofolio");
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
     print("jsonData");

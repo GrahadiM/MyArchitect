@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/model/user_model.dart';
 import 'package:my_architect/pages/profile/edit_profile.dart';
@@ -15,13 +16,17 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String BaseUrl = AppSetting.apirul;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   int userId;
   UserModel dataUser;
+  UserModel dataUserFake = UserModel.fromJson(json.decode(
+      '{"id": 0, "name": "-", "email": "-",  "phone": "-", "address": "-", "city": "-"}'));
 
   @override
   void initState() {
     super.initState();
+    dataUser = dataUserFake;
     _getUserId();
   }
 
@@ -34,12 +39,8 @@ class _ProfileState extends State<Profile> {
 
   void initialData() async {
     Uri url = Uri.parse(
-        "http://192.168.43.183/flutter/public/api/akun/show?userId="
-                .toString() +
-            userId.toString());
-    print("http://192.168.43.183/flutter/public/api/akun/show?userId="
-            .toString() +
-        userId.toString());
+        BaseUrl + "/akun/show?userId=".toString() + userId.toString());
+    print(BaseUrl + "/akun/show?userId=".toString() + userId.toString());
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
     print("jsonData");
@@ -113,7 +114,7 @@ class ProfileSevenPage extends StatelessWidget {
                         padding: EdgeInsets.all(5),
                       ),
                       Text(
-                        "User",
+                        dataUserModel.name,
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
@@ -134,7 +135,7 @@ class ProfileSevenPage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(15),
                       ),
-                      UserInfo(dataUserModel)
+                      Visibility(visible: true, child: UserInfo(dataUserModel))
                     ],
                   )
                 ],
@@ -183,26 +184,36 @@ class UserInfo extends StatelessWidget {
                             EdgeInsets.symmetric(horizontal: 12, vertical: 15),
                         leading: Icon(Icons.my_location),
                         title: Text("Location"),
-                        subtitle: Text(userDataModel.city.toString() +
-                            "\n" +
-                            userDataModel.address.toString()),
+                        subtitle: Text(userDataModel.city != null
+                            ? userDataModel.city.toString()
+                            : '-' +
+                                "\n" +
+                                (userDataModel.address != null
+                                    ? userDataModel.address.toString()
+                                    : '-')),
                       ),
                       ListTile(
                         leading: Icon(Icons.email),
                         title: Text("Email"),
-                        subtitle: Text(userDataModel.email.toString()),
+                        subtitle: Text(userDataModel.email != null
+                            ? userDataModel.email.toString()
+                            : '-'),
                       ),
                       ListTile(
                         leading: Icon(Icons.phone),
                         title: Text("Phone"),
-                        subtitle: Text(userDataModel.phone.toString()),
+                        subtitle: Text(userDataModel.phone != null
+                            ? userDataModel.phone.toString()
+                            : '-'),
                       ),
                       ListTile(
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 15),
                         leading: Icon(Icons.person),
                         title: Text("About Me"),
-                        subtitle: Text(userDataModel.desc.toString()),
+                        subtitle: Text(userDataModel.desc != null
+                            ? userDataModel.desc.toString()
+                            : '-'),
                       ),
                     ],
                   ))

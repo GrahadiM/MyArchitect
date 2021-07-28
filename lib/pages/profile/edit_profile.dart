@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_architect/api/api_edit_profil.dart';
+import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/edit_profil_model.dart';
 import 'package:my_architect/model/user_model.dart';
 import 'package:my_architect/pages/auth/auth_component/form_widget.dart';
@@ -39,6 +40,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   EditProfilRequestModel editProfilRequestModel;
+  String BaseUrl = AppSetting.apirul;
 
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -64,9 +66,7 @@ class _EditProfileState extends State<EditProfile> {
 
   void initialData() async {
     Uri url = Uri.parse(
-        "http://192.168.43.183/flutter/public/api/akun/show?userId="
-                .toString() +
-            userId.toString());
+        BaseUrl + "/akun/show?userId=".toString() + userId.toString());
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
     print("jsonData");
