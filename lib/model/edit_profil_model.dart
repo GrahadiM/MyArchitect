@@ -25,16 +25,17 @@ class EditProfilRequestModel {
   String address;
   String email;
   String password;
+  String userId;
 
-  EditProfilRequestModel({
-    this.username,
-    this.phone,
-    this.description,
-    this.city,
-    this.address,
-    this.email,
-    this.password,
-  });
+  EditProfilRequestModel(
+      {this.username,
+      this.phone,
+      this.description,
+      this.city,
+      this.address,
+      this.email,
+      this.password,
+      this.userId});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
@@ -45,6 +46,7 @@ class EditProfilRequestModel {
       'address': address.trim(),
       'email': email.trim(),
       'password': password.trim(),
+      'userId': userId.trim(),
     };
 
     return map;
