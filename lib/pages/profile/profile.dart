@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/model/user_model.dart';
+import 'package:my_architect/pages/home.dart';
 import 'package:my_architect/pages/profile/edit_profile.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_architect/pages/root.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -67,7 +69,13 @@ class ProfileSevenPage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (BuildContext context) => Root()));
+            // Navigator.pop(context);
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (_) => Root()),
+            // );
           },
         ),
         backgroundColor: Color.fromRGBO(255, 255, 255, .9),
