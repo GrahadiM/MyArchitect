@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_architect/model/item_model.dart';
+import 'package:my_architect/model/price_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/component/form_order.dart';
+import 'package:http/http.dart' as http;
+
+import '../app_setting.dart';
 
 class CardDetail extends StatefulWidget {
   final ItemModel item;
@@ -16,7 +22,36 @@ class CardDetail extends StatefulWidget {
 }
 
 class _CardDetailState extends State<CardDetail> {
+  List list_price = [];
   get user => '085767113554';
+
+  void initState() {
+    super.initState();
+    list_price = [];
+    _getPrice(widget.item);
+  }
+
+  void _getPrice(ItemModel item) async {
+    String BaseUrl = AppSetting.apirul;
+    Uri url = Uri.parse(BaseUrl + "/price?user_id=" + item.user_id);
+    print(url);
+    final response = await http.get(url);
+    var jsonData = json.decode(response.body);
+    print("jsonData");
+    print(jsonData["data"]);
+
+    if (jsonData["success"]) {
+      for (var u in jsonData["data"]["price"]) {
+        PriceModel project = PriceModel.fromJson(u);
+        print(project);
+        list_price.add(project);
+      }
+    }
+    print("list_price.length");
+    print(list_price.length);
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +160,66 @@ class _CardDetailState extends State<CardDetail> {
                               ),
                             ],
                           ),
+                          Row(
+                            children: [
+                              Text(
+                                "\nDeskripsi : \n",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  item.desc,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                "\nHarga : \n",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                            visible: true,
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  left: 0, top: 0, bottom: 20, right: 0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  for (PriceModel i in list_price)
+                                    Text(
+                                      " - " +
+                                          i.name +
+                                          " ( Rp . " +
+                                          i.price +
+                                          ") \nKeterangan : " +
+                                          i.desc +
+                                          "\n\n     \t",
+                                      textAlign: TextAlign.start,
+                                    )
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -140,10 +235,11 @@ class _CardDetailState extends State<CardDetail> {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                        left: 25,
+                        left: 0,
                         top: 0,
                         bottom: 0,
                         right: 0,

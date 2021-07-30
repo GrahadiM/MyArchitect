@@ -29,6 +29,7 @@ class _FormOrderState extends State<FormOrder> {
   TextEditingController descriptionController = new TextEditingController();
   TextEditingController cityController = new TextEditingController();
   TextEditingController addressController = new TextEditingController();
+  TextEditingController luasLahanController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   OrderRequestModel orderRequestModel;
@@ -131,6 +132,13 @@ class _FormOrderState extends State<FormOrder> {
                       controller: addressController,
                       action: TextInputAction.next,
                     ),
+                    UserComponent.formUser(
+                      'Luas Lahan M2',
+                      hint: 'M2',
+                      type: TextInputType.number,
+                      controller: luasLahanController,
+                      action: TextInputAction.next,
+                    ),
                     new InputDecorator(
                       decoration: InputDecoration(
                         filled: false,
@@ -197,6 +205,7 @@ class _FormOrderState extends State<FormOrder> {
                         orderRequestModel.phone = phoneController.text;
                         orderRequestModel.city = cityController.text;
                         orderRequestModel.address = addressController.text;
+                        orderRequestModel.luasLahan = luasLahanController.text;
                         orderRequestModel.order_id = widget.item.id;
                         orderRequestModel.price_id = _dropdownValue.toString();
                         orderRequestModel.token = token;

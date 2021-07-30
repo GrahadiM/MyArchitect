@@ -26,6 +26,7 @@ class OrderRequestModel {
   String order_id;
   String token;
   String price_id;
+  String luasLahan;
 
   OrderRequestModel(
       {this.phone,
@@ -33,7 +34,8 @@ class OrderRequestModel {
       this.address,
       this.order_id,
       this.token,
-      this.price_id});
+      this.price_id,
+      this.luasLahan});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
@@ -42,7 +44,8 @@ class OrderRequestModel {
       'address': address.trim(),
       'portofolio_id': order_id.trim(),
       'token': token,
-      'price_id': price_id
+      'price_id': price_id,
+      'luasLahan': luasLahan,
     };
 
     return map;

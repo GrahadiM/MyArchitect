@@ -7,6 +7,7 @@ class ItemModel {
   final String image;
   final String price;
   final String user_id;
+  final String desc;
 
   ItemModel({
     this.id,
@@ -17,6 +18,7 @@ class ItemModel {
     this.image,
     this.price,
     this.user_id,
+    this.desc,
   });
 
   factory ItemModel.fromJson(Map<String, dynamic> json) {
@@ -36,7 +38,8 @@ class ItemModel {
           ? json["url_image"]
           : 'http://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
       price: "",
-      user_id: "",
+      user_id: json["user_id"] != null ? json["user_id"].toString() : '',
+      desc: json["desc"] != null ? json["desc"] : "",
     );
   }
 }

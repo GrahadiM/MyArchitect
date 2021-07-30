@@ -151,7 +151,7 @@ class _CardDetailHistoryState extends State<CardDetailHistory> {
                                 ),
                               )
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
