@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final response = await http.get(url);
     var jsonData = json.decode(response.body);
     print("jsonData");
-    print(jsonData["success"]);
+    print(jsonData);
 
     if (jsonData["success"]) {
       for (var u in jsonData["data"]["portofolio"]["data"]) {

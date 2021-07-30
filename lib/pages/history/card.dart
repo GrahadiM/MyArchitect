@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:my_architect/component/card_detail%20history.dart';
 import 'package:my_architect/component/card_detail.dart';
 import 'package:my_architect/component/animation_fade.dart';
+import 'package:my_architect/model/history_model.dart';
 import 'package:my_architect/model/item_model.dart';
 
 class Lists extends StatelessWidget {
-  final List<ItemModel> _data;
+  final List<HistoryModel> _data;
   Lists(this._data);
 
   @override
@@ -14,7 +16,7 @@ class Lists extends StatelessWidget {
       padding: EdgeInsets.all(6),
       itemCount: _data.length,
       itemBuilder: (BuildContext context, int index) {
-        ItemModel item = _data[index];
+        HistoryModel item = _data[index];
         return Card(
           elevation: 3,
           child: Row(
@@ -55,6 +57,21 @@ class Lists extends StatelessWidget {
                       item.categoryModel.toUpperCase(),
                       style: TextStyle(fontSize: 14, color: Colors.black87),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Progres : \n" + item.progresAkhir,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.visible,
+                      maxLines: 2,
+                      softWrap: false,
+                    ),
+
                     // SizedBox(
                     //   height: 10,
                     // ),
@@ -65,17 +82,17 @@ class Lists extends StatelessWidget {
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(
-                          width: 100,
+                          width: 50,
                         ),
-                        // ElevatedButton(
-                        //   onPressed: () => Navigator.push(
-                        //     context,
-                        //     FadeRoute2(
-                        //       DetailHistory(),
-                        //     ),
-                        //   ),
-                        //   child: Text('Click'),
-                        // ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            FadeRoute2(
+                              DetailHistory(item),
+                            ),
+                          ),
+                          child: Text('Detail'),
+                        ),
                       ],
                     ),
                   ],
@@ -113,17 +130,19 @@ class FadeRoute1 extends PageRouteBuilder {
         );
 }
 
-// class DetailHistory extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       appBar: AppBar(
-//         brightness: Brightness.dark,
-//         centerTitle: true,
-//         title: Text('Detail History Pesanan'),
-//       ),
-//       body: CardDetail(),
-//     );
-//   }
-// }
+class DetailHistory extends StatelessWidget {
+  HistoryModel item;
+  DetailHistory(this.item);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        centerTitle: true,
+        title: Text('Detail History Pesanan'),
+      ),
+      body: CardDetailHistory(item),
+    );
+  }
+}

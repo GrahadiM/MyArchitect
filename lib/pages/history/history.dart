@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:my_architect/app_setting.dart';
+import 'package:my_architect/model/history_model.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'package:my_architect/pages/history/card.dart';
 import 'package:http/http.dart' as http;
@@ -27,16 +28,17 @@ class _HistoryState extends State<History> {
     print(userId);
 
     Uri url =
-        Uri.parse(BaseUrl + "/history?id=".toString() + userId.toString());
+        Uri.parse(BaseUrl + "/history?userId=".toString() + userId.toString());
     final response = await http.get(url);
+    print(response.body);
     var jsonData = json.decode(response.body);
     print(BaseUrl + "/history?id=".toString() + userId.toString());
     print("jsonData");
-    print(jsonData);
+    print(jsonData["data"]);
 
     if (jsonData["success"]) {
       for (var u in jsonData["data"]["order"]) {
-        ItemModel project = ItemModel.fromJson(u);
+        HistoryModel project = HistoryModel.fromJson(u);
         list.add(project);
       }
     }
@@ -45,7 +47,7 @@ class _HistoryState extends State<History> {
     setState(() {});
   }
 
-  List<ItemModel> list = [];
+  List<HistoryModel> list = [];
   @override
   void initState() {
     super.initState();
