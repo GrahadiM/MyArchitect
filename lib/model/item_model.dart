@@ -34,9 +34,9 @@ class ItemModel {
       author: json["author"] != null ? json["author"] : "",
       image: json["url_image"] != null
           ? json["url_image"]
-          : 'https://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
-      price: json["price"] != null ? json["price"] : "",
-      user_id: json["user_id"] != null ? json["user_id"].toString() : "",
+          : 'http://raw.githubusercontent.com/GrahadiM/MyArchitect_Web/main/public/image/portofolio/step-1.jpg',
+      price: "",
+      user_id: "",
     );
   }
 }

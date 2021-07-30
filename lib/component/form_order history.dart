@@ -1,15 +1,17 @@
 import 'dart:convert';
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_architect/api/api_order.dart';
+import 'package:my_architect/api/api_review_post.dart';
 import 'package:my_architect/app_setting.dart';
 import 'package:my_architect/model/history_model.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'package:my_architect/model/order_model.dart';
 import 'package:my_architect/model/price_model.dart';
+import 'package:my_architect/model/review_model.dart';
 import 'package:my_architect/pages/auth/auth_component/form_widget.dart';
 import 'package:my_architect/component/animation_fade.dart';
 import 'package:my_architect/pages/home.dart';
@@ -25,16 +27,11 @@ class FormOrderHistory extends StatefulWidget {
 }
 
 class _FormOrderHistoryState extends State<FormOrderHistory> {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController phoneController = new TextEditingController();
-  TextEditingController descriptionController = new TextEditingController();
-  TextEditingController cityController = new TextEditingController();
-  TextEditingController addressController = new TextEditingController();
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  OrderRequestModel orderRequestModel;
+  TextEditingController commentController = new TextEditingController();
+  ReviewRequestModel reviewRequestModel;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   String token;
+  String valueRating = "1";
   List list_price = [];
   int _dropdownValue;
   // Widget.canUpdate(oldWidget, newWidget)
@@ -43,7 +40,7 @@ class _FormOrderHistoryState extends State<FormOrderHistory> {
   var formKey = new GlobalKey<FormState>();
   void initState() {
     super.initState();
-    orderRequestModel = new OrderRequestModel();
+    reviewRequestModel = new ReviewRequestModel();
     _getToken();
     // _getPrice(widget.item);
   }
@@ -112,53 +109,30 @@ class _FormOrderHistoryState extends State<FormOrderHistory> {
                 child: Column(
                   children: [
                     UserComponent.formUser(
-                      'Phone',
-                      hint: '085767113554',
-                      type: TextInputType.phone,
-                      controller: phoneController,
-                      action: TextInputAction.next,
+                      'Komentar',
+                      hint: 'Masukan Komentar',
+                      type: TextInputType.multiline,
+                      controller: commentController,
+                      action: TextInputAction.newline,
+                      minLines: 5,
+                      maxLines: 10,
                     ),
-                    UserComponent.formUser(
-                      'City',
-                      hint: 'Jakarta Timur',
-                      type: TextInputType.name,
-                      controller: cityController,
-                      action: TextInputAction.next,
-                    ),
-                    UserComponent.formUser(
-                      'Address',
-                      hint: 'Kec.Pisangan Timur',
-                      type: TextInputType.name,
-                      controller: addressController,
-                      action: TextInputAction.next,
-                    ),
-                    new InputDecorator(
-                      decoration: InputDecoration(
-                        filled: false,
-                        hintText: 'Choose Country',
-                        prefixIcon: Icon(Icons.location_on),
-                        labelText: 'Pilih Harga',
+                    RatingBar.builder(
+                      initialRating: 1,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
                       ),
-                      child: DropdownButton(
-                        value: _dropdownValue,
-                        isDense: true,
-                        onChanged: (list_price) {
-                          print('value change');
-                          print(list_price);
-                          setState(() {
-                            _dropdownValue = list_price;
-                          });
-                        },
-                        items: list_price.map((value) {
-                          return DropdownMenuItem(
-                            value: value.id,
-                            child: Text(value.name.toString() +
-                                " - " +
-                                value.price.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    )
+                      onRatingUpdate: (rating) {
+                        print(rating);
+                        valueRating = rating.round().toString();
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -188,59 +162,65 @@ class _FormOrderHistoryState extends State<FormOrderHistory> {
                     padding: const EdgeInsets.only(left: 0, right: 20),
                     child: RaisedButton(
                       onPressed: () {
-                        print(phoneController.text);
-                        print(cityController.text);
-                        print(addressController.text);
-                        print(widget.item.id);
+                        if (commentController.text != '') {
+                          reviewRequestModel.comment = commentController.text;
+                          reviewRequestModel.star = valueRating;
+                          reviewRequestModel.orderId = widget.item.id;
 
-                        print(token);
+                          reviewRequestModel.token = token;
 
-                        orderRequestModel.phone = phoneController.text;
-                        orderRequestModel.city = cityController.text;
-                        orderRequestModel.address = addressController.text;
-                        orderRequestModel.order_id = widget.item.id;
-                        orderRequestModel.price_id = _dropdownValue.toString();
-                        orderRequestModel.token = token;
+                          APIReviewPost apiReviewPost = new APIReviewPost();
+                          apiReviewPost
+                              .order(reviewRequestModel)
+                              .then((value) async {
+                            if (value.success) {
+                              EasyLoading.dismiss();
+                              Fluttertoast.showToast(
+                                msg: "Berhasil Review",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.SNACKBAR,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.blue,
+                                fontSize: 16.0,
+                              );
 
-                        APIOrder apiService = new APIOrder();
-                        apiService.order(orderRequestModel).then((value) async {
-                          if (value.success) {
-                            EasyLoading.dismiss();
-                            Fluttertoast.showToast(
-                              msg: "Berhasil Order",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.SNACKBAR,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              fontSize: 16.0,
-                            );
+                              // log(loginController.authStorage
+                              //     .read('isLogin')
+                              //     .toString());
 
-                            // log(loginController.authStorage
-                            //     .read('isLogin')
-                            //     .toString());
+                              await Future.delayed(
+                                Duration(milliseconds: 300),
+                                () => Get.offAll(Root()),
+                              );
+                            } else {
+                              EasyLoading.dismiss();
+                              Fluttertoast.showToast(
+                                msg: "Gagal Review",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.SNACKBAR,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                fontSize: 16.0,
+                              );
+                            }
+                            // if (value != null) {
+                            //   setState(() {
+                            //     // isApiCallProcess = false;
+                            //   });
+                            // }
+                          });
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: "Komentar Tidak Boleh Kosong",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.SNACKBAR,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            fontSize: 16.0,
+                          );
+                        }
 
-                            await Future.delayed(
-                              Duration(milliseconds: 300),
-                              () => Get.offAll(Root()),
-                            );
-                          } else {
-                            EasyLoading.dismiss();
-                            Fluttertoast.showToast(
-                              msg: "Gagal Order",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.SNACKBAR,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              fontSize: 16.0,
-                            );
-                          }
-                          // if (value != null) {
-                          //   setState(() {
-                          //     // isApiCallProcess = false;
-                          //   });
-                          // }
-                        });
-                        // nameController;
+                        // commentController;
                         // Navigator.pop(context);
                       },
                       color: Colors.blue,

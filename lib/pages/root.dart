@@ -7,6 +7,7 @@ import 'package:my_architect/pages/auth_page.dart';
 class Root extends GetWidget<AuthController> {
   @override
   Widget build(BuildContext context) {
+    print("masuks ini ====");
     return Obx(() =>
         Get.find<AuthController>().isLogin.value ? BottomNavBar() : AuthPage());
   }

@@ -227,13 +227,13 @@ class _CardDetailHistoryState extends State<CardDetailHistory> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       ElevatedButton(
-                        onPressed: () => print("ditekan"),
-                        // onPressed: () => Navigator.push(
-                        //   context,
-                        //   FadeRoute2(
-                        //     FormOrder(item),
-                        //   ),
-                        // ),
+                        // onPressed: () => print("ditekan"),
+                        onPressed: () => Navigator.push(
+                          context,
+                          FadeRoute2(
+                            FormOrderHistory(item),
+                          ),
+                        ),
                         child: Text('Berikan Review'),
                       ),
                     ],
