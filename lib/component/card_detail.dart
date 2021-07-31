@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_architect/model/item_model.dart';
 import 'package:my_architect/model/price_model.dart';
+import 'package:my_architect/pages/arsitek/profil_arsitek.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my_architect/component/animation_fade.dart';
@@ -151,13 +152,27 @@ class _CardDetailState extends State<CardDetail> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              Text(
-                                item.author,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black87,
+                              GestureDetector(
+                                onTap: () {
+                                  print("ditekan fin");
+                                  Navigator.push(
+                                    context,
+                                    FadeRoute2(
+                                      ArsitekProfilePage(
+                                          item.author, list_price),
+                                    ),
+                                  );
+                                },
+
+                                // onPressed: () => ,
+                                child: Text(
+                                  item.author,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                           Row(

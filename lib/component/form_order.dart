@@ -142,7 +142,7 @@ class _FormOrderState extends State<FormOrder> {
                     new InputDecorator(
                       decoration: InputDecoration(
                         filled: false,
-                        hintText: 'Choose Country',
+                        hintText: 'Pilih Harga',
                         prefixIcon: Icon(Icons.location_on),
                         labelText: 'Pilih Harga',
                       ),
